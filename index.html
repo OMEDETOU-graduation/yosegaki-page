@@ -23,27 +23,13 @@
     }
 
     /* =========================
-       背景（春っぽいドット・ランダムサイズ）
+       背景用キャンバス
     ========================= */
-    body::before {
-      content: "";
+    canvas {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
       z-index: -1;
-      background-image:
-        radial-gradient(circle at 20% 30%, rgba(255,233,212,0.7)20px, transparent 0),
-        radial-gradient(circle at 60% 50%, rgba(255,212,240,0.7) 46px, transparent 0),
-        radial-gradient(circle at 80% 80%, rgba(212,253,255,0.7) 52px, transparent 0),
-        radial-gradient(circle at 40% 10%, rgba(255,240,212,0.7) 30px, transparent 0),
-        radial-gradient(circle at 30% 70%, rgba(200,255,220,0.7) 30px, transparent 0);
-      background-size: 220px 220px;
-      filter: blur(1.5px);
-      animation: bgMove 40s linear infinite;
-    }
-
-    @keyframes bgMove {
-      from { background-position: 0 0; }
-      to   { background-position: 0 600px; }
     }
 
     /* =========================
@@ -67,7 +53,7 @@
     }
 
     h1 span {
-      color: #FF9A3C;
+      color: #FF9A3C; /* オレンジ系装飾 */
       margin: 0 0.2em;
     }
 
@@ -108,6 +94,8 @@
 </head>
 
 <body>
+  <canvas id="bgDots"></canvas>
+
   <div class="container">
 
     <h1>
@@ -189,6 +177,50 @@
         const move = offset < 0 ? Math.max(offset * 0.03, -12) : 0;
         el.style.transform = `translateY(${move}px)`;
       });
+    });
+
+    /* =========================
+       背景ドット（ランダム降下）
+    ========================= */
+    const canvas = document.getElementById('bgDots');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const dots = [];
+    const dotCount = 80; // ドットの数
+
+    for(let i = 0; i < dotCount; i++){
+      dots.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: 5 + Math.random() * 15,   // ランダムな大きさ
+        speed: 0.2 + Math.random() * 1,   // 落下速度
+        color: `rgba(${200 + Math.random()*55}, ${200 + Math.random()*55}, 255, 0.7)`
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      dots.forEach(dot => {
+        dot.y += dot.speed;
+        if(dot.y - dot.radius > height) {
+          dot.y = -dot.radius;
+          dot.x = Math.random() * width;
+        }
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx.fillStyle = dot.color;
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     });
   </script>
 </body>
