@@ -2,260 +2,176 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>寄せ書き</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>卒業メッセージ</title>
 
   <style>
     /* =========================
-       基本設定
-       ========================= */
+       全体リセット
+    ========================= */
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 0;
-      font-family:
-        "YuKyokasho",
-        "游教科書",
-        "HG教科書体",
-        "Hiragino Kaku Gothic ProN",
-        "Noto Sans JP",
-        sans-serif;
-
+      font-family: "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN",
+                   "Noto Sans JP", sans-serif;
       color: #001E43;
-      background: #C0FFEE;
-      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
     }
 
     /* =========================
-       レイアウト全体
-       ========================= */
-
-    .container {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 24px 12px 40px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* =========================
-       見出し（装飾つき）
-       ========================= */
-
-    .title {
-      text-align: center;
-      font-size: 1.5rem;
-      margin: 40px 0 32px;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    .title::before,
-    .title::after {
+       背景（春っぽいドット）
+       ・固定背景
+       ・ゆっくり下に流れる
+    ========================= */
+    body::before {
       content: "";
-      font-family: inherit;
-      color: #F4A261; /* オレンジ系 */
-      opacity: 0.8;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+
+      background-color: #C0FFEE;
+
+      /* ドットは小さめ・量少なめ・輪郭ぼかし */
+      background-image:
+        radial-gradient(circle at 20% 10%, rgba(255,233,212,0.7) 0 6px, transparent 7px),
+        radial-gradient(circle at 70% 30%, rgba(255,212,240,0.7) 0 6px, transparent 7px),
+        radial-gradient(circle at 40% 80%, rgba(212,253,255,0.7) 0 6px, transparent 7px);
+
+      background-size: 220px 220px;
+      filter: blur(1.5px);
+
+      animation: bgMove 40s linear infinite;
     }
 
-    .title::before {
-      content: "𓊆 ";
-      margin-right: 0.4em;
-    }
-
-    .title::after {
-      content: " 𓊇";
-      margin-left: 0.4em;
+    @keyframes bgMove {
+      from { background-position: 0 0; }
+      to   { background-position: 0 600px; }
     }
 
     /* =========================
-       メッセージカード
-       ========================= */
+       レイアウトコンテナ
+    ========================= */
+    .container {
+      padding: 32px 16px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-    ..message {
-  width: 100%;              /* ← 明示的に100% */
-  max-width: 520px;
-  margin: 0 auto 20px;
+    /* =========================
+       見出し
+    ========================= */
+    h1 {
+      text-align: center;
+      font-family: "游教科書体", "YuKyokasho", serif;
+      font-size: clamp(22px, 5vw, 32px);
+      margin-bottom: 32px;
+      position: relative;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
 
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 18px;
-  padding: 16px 18px;
-  backdrop-filter: blur(6px);
-}
-      /* モニュっと＋バウンス用 */
-      transition: transform 0.35s cubic-bezier(0.22, 1.6, 0.36, 1);
+    /* 装飾用の特殊文字 */
+    h1 span {
+      color: #FF9A4D; /* オレンジ系 */
+      margin: 0 6px;
+    }
+
+    /* =========================
+       メッセージカード（外側）
+       ・中央揃え
+       ・背景・角丸・ぼかし
+    ========================= */
+    .message {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 24px;
+
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 18px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* =========================
+       メッセージ中身（動く部分）
+       ・ここがモニュっと動く
+    ========================= */
+    .message-inner {
+      padding: 18px 20px;
+
+      transition: transform 0.35s
+        cubic-bezier(0.22, 1.6, 0.36, 1); /* 微バウンス */
       will-change: transform;
     }
 
-    .message-text {
-      font-family:
-        "Hiragino Maru Gothic ProN",
-        "Yu Gothic",
-        "Noto Sans JP",
-        sans-serif;
-
-      font-size: 1rem;
-      line-height: 1.6;
+    .message p {
+      margin: 0 0 12px;
+      line-height: 1.7;
       text-align: left;
-      word-break: break-word;
+      font-size: 15px;
     }
 
-    .from {
-      margin-top: 8px;
-      font-size: 0.85rem;
+    .message .name {
       text-align: right;
-      opacity: 0.9;
-    }
-
-    /* =========================
-       背景canvas
-       ========================= */
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
+      font-size: 14px;
+      margin-top: 8px;
     }
   </style>
 </head>
 
 <body>
-  <canvas id="bg"></canvas>
-
   <div class="container">
-    <h1 class="title">ご卒業おめでとうございます</h1>
 
+    <h1>
+      <span>𓊆</span>
+      ご卒業おめでとうございます
+      <span>𓊇</span>
+    </h1>
+
+    <!-- メッセージカード -->
     <div class="message">
-      <div class="message-text">
-        これからの毎日が、やさしくて楽しい時間で満ちますように。
+      <div class="message-inner">
+        <p>
+          ここまで本当にお疲れさまでした。<br>
+          それぞれの時間が、これからの糧になりますように。
+        </p>
+        <div class="name">メッセージ　〇〇より</div>
       </div>
-      <div class="from">〇〇より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
-    </div>
-    <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
-      </div>
-      <div class="from">△△より</div>
     </div>
 
     <div class="message">
-      <div class="message-text">
-        新しい場所でも、あなたらしく進んでいけますように。
+      <div class="message-inner">
+        <p>
+          新しい道の先でも、<br>
+          自分らしい歩幅を大切にしてください。
+        </p>
+        <div class="name">メッセージ　△△より</div>
       </div>
-      <div class="from">△△より</div>
     </div>
+
   </div>
 
   <script>
-    /* =====================================================
-       背景ドットアニメ（canvas）
-       ===================================================== */
-
-    const canvas = document.getElementById("bg");
-    const ctx = canvas.getContext("2d");
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const colors = ["#FFE9D4", "#FFD4F0", "#D4FDFF"];
-    const dots = [];
-    const DOT_COUNT = 14;
-
-    for (let i = 0; i < DOT_COUNT; i++) {
-      dots.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: 70 + Math.random() * 80,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        speed: 0.12 + Math.random() * 0.18
-      });
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      dots.forEach(dot => {
-        ctx.beginPath();
-        ctx.fillStyle = dot.color;
-        ctx.globalAlpha = 0.55;
-        ctx.filter = "blur(60px)";
-        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        dot.y += dot.speed;
-        if (dot.y - dot.r > canvas.height) {
-          dot.y = -dot.r;
-          dot.x = Math.random() * canvas.width;
-        }
-      });
-
-      ctx.globalAlpha = 1;
-      ctx.filter = "none";
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-
-    /* =====================================================
-       スクロール追従：モニュ＋微バウンス
-       ===================================================== */
-
-    const messages = document.querySelectorAll(".message");
-    let lastScrollY = window.scrollY;
+    /* =========================
+       スクロール時の微バウンス
+       A案（採用中）
+       ・重くならない
+       ・触感だけ足す
+    ========================= */
+    const inners = document.querySelectorAll(".message-inner");
 
     window.addEventListener("scroll", () => {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY;
+      inners.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const offset = rect.top - window.innerHeight / 1.2;
 
-      messages.forEach(msg => {
-        const offset = Math.max(Math.min(delta * 0.15, 12), -12);
-        msg.style.transform = `translateY(${offset}px)`;
-      });
-
-      lastScrollY = currentScrollY;
-    });
-
-    window.addEventListener("scrollend", () => {
-      messages.forEach(msg => {
-        msg.style.transform = "translateY(0)";
+        if (offset < 0) {
+          const move = Math.max(offset * 0.03, -12);
+          el.style.transform = `translateY(${move}px)`;
+        } else {
+          el.style.transform = "translateY(0)";
+        }
       });
     });
   </script>
