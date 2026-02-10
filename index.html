@@ -52,13 +52,30 @@
     /* =========================
        見出し
        ========================= */
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 40px 0 32px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
 
-    h1 {
-      text-align: center;
-      font-size: 1.5rem;
-      margin: 40px 0 32px;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    }
+/* 装飾記号（左右） */
+.title::before,
+.title::after {
+  font-family: inherit;
+  color: #F4A261; /* オレンジ系 */
+  opacity: 0.8;
+}
+
+.title::before {
+  content: "𓊆 ";
+  margin-right: 0.4em;
+}
+
+.title::after {
+  content: " 𓊇";
+  margin-left: 0.4em;
+}
 
     /* =========================
        メッセージカード
@@ -118,7 +135,7 @@
   <canvas id="bg"></canvas>
 
   <div class="container">
-    <h1>ご卒業おめでとうございます</h1>
+    <h1 class="title">ご卒業おめでとうございます</h1>
 
     <!-- ▼ メッセージはこのブロックをコピペして増やす ▼ -->
     <div class="message">
