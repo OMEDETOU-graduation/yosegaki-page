@@ -25,6 +25,15 @@
       background: #C0FFEE;
 
       -webkit-overflow-scrolling: touch;
+      /* =========================
+   モニュっと＋バウンス用
+   ========================= */
+
+.message {
+  /* transformだけで動かす（軽量） */
+  transition: transform 0.35s cubic-bezier(0.22, 1.6, 0.36, 1);
+  will-change: transform;
+}
     }
 
     /* =========================
@@ -214,6 +223,34 @@
     }
 
     draw();
+    <script>
+  /* =========================
+     スクロール追従モニュ＋微バウンス
+     ========================= */
+
+  const messages = document.querySelectorAll(".message");
+  let lastScrollY = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+
+    messages.forEach((msg, i) => {
+      /* スクロール量に応じて少しだけ遅らせる */
+      const offset = Math.max(Math.min(delta * 0.15, 12), -12);
+
+      msg.style.transform = `translateY(${offset}px)`;
+    });
+
+    lastScrollY = currentScrollY;
+  });
+
+  window.addEventListener("scrollend", () => {
+    messages.forEach(msg => {
+      msg.style.transform = "translateY(0)";
+    });
+  });
+</script>
 
     /* =====================================================
        OPTION B：CSS/div粒子版（予備・無効）
