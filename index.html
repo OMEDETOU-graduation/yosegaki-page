@@ -95,16 +95,18 @@
 
     /* =========================
        メッセージ中身（動く部分）
-       ・ここがモニュっと動く
+       ・ここがモニュっと動
     ========================= */
-    .message-inner {
-      padding: 18px 20px;
+    ..message-inner p:first-child {
+  margin-top: 0.8em;
+}
 
-      transition: transform 0.35s
-        cubic-bezier(0.22, 1.6, 0.36, 1); /* 微バウンス */
-      will-change: transform;
-    }
-
+.message-inner {
+  padding: 18px 20px;
+  transition: transform 0.35s
+    cubic-bezier(0.22, 1.6, 0.36, 1);
+  will-change: transform;
+}
     .message p {
       margin: 0 0 12px;
       line-height: 1.7;
