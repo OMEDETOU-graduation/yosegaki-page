@@ -51,6 +51,9 @@
       font-size: clamp(22px, 5vw, 32px);
       margin-bottom: 32px;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+word-break: keep-all;       /* 単語途中での改行を防ぐ */
+  white-space: nowrap;        /* 必要に応じて1行に収める */
+  letter-spacing: 0.02em;    /* 微調整で文字間を均す */
     }
 
     h1 span {
